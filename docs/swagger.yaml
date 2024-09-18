@@ -1,0 +1,1575 @@
+basePath: /v1
+definitions:
+  entity.Ad:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      link:
+        type: string
+      view_count:
+        type: integer
+    type: object
+  entity.Admin:
+    properties:
+      avatar:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.Category:
+    properties:
+      id:
+        type: string
+      name_ru:
+        type: string
+      name_uz:
+        type: string
+    type: object
+  entity.CategoryWithSubCategories:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      name_ru:
+        type: string
+      name_uz:
+        type: string
+      subcategories:
+        items:
+          $ref: '#/definitions/entity.SubCategory'
+        type: array
+    type: object
+  entity.CreateAdRequest:
+    properties:
+      id:
+        type: string
+      image_url:
+        type: string
+      link:
+        type: string
+    type: object
+  entity.Link:
+    properties:
+      link_name:
+        type: string
+      link_url:
+        type: string
+    type: object
+  entity.Source:
+    properties:
+      id:
+        type: string
+      site_image_url:
+        type: string
+      site_name:
+        type: string
+      site_url:
+        type: string
+    type: object
+  entity.SubCategory:
+    properties:
+      category_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      name_ru:
+        type: string
+      name_uz:
+        type: string
+    type: object
+  entity.SuperAdmin:
+    properties:
+      avatar:
+        type: string
+      id:
+        type: string
+      is_blocked:
+        type: boolean
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  models.Admin:
+    properties:
+      avatar:
+        type: string
+      id:
+        type: string
+      password:
+        example: test
+        type: string
+      username:
+        example: test
+        type: string
+    type: object
+  models.AdminLoginRequest:
+    properties:
+      avatar:
+        type: string
+      password:
+        example: test
+        type: string
+      username:
+        example: test
+        type: string
+    type: object
+  models.AdminLoginResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  models.Message:
+    properties:
+      message:
+        type: string
+    type: object
+  models.News:
+    properties:
+      image_url:
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/entity.Link'
+        type: array
+      ru_description:
+        type: string
+      ru_name:
+        type: string
+      ru_text:
+        type: string
+      site_image_link:
+        type: string
+      sub_category_ids:
+        items:
+          type: string
+        type: array
+      uz_description:
+        type: string
+      uz_name:
+        type: string
+      uz_text:
+        type: string
+      video_url:
+        type: string
+      voice_url:
+        type: string
+    type: object
+  models.NewsOneLang:
+    properties:
+      description:
+        type: string
+      image_url:
+        type: string
+      links:
+        items:
+          $ref: '#/definitions/entity.Link'
+        type: array
+      name:
+        type: string
+      site_image_link:
+        type: string
+      sub_category_ids:
+        items:
+          type: string
+        type: array
+      text:
+        type: string
+      video_url:
+        type: string
+      voice_url:
+        type: string
+    type: object
+  models.SuperAdmin:
+    properties:
+      avatar:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  models.SuperAdminLoginRequest:
+    properties:
+      avatar:
+        type: string
+      password:
+        example: test
+        type: string
+      phone_number:
+        example: test
+        type: string
+    type: object
+  v1.WeatherResponse:
+    properties:
+      elevation:
+        type: number
+      generationtime_ms:
+        type: number
+      hourly:
+        properties:
+          temperature_2m:
+            items:
+              type: number
+            type: array
+          time:
+            items:
+              type: string
+            type: array
+        type: object
+      hourly_units:
+        properties:
+          temperature_2m:
+            type: string
+          time:
+            type: string
+        type: object
+      latitude:
+        type: number
+      longitude:
+        type: number
+      timezone:
+        type: string
+      timezone_abbreviation:
+        type: string
+      utc_offset_seconds:
+        type: integer
+    type: object
+  v1.response:
+    properties:
+      error:
+        example: message
+        type: string
+      status:
+        type: boolean
+    type: object
+  v1.youtubeVideoResponse:
+    properties:
+      title:
+        type: string
+      videoId:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: 'Backend - Nodirbek No''monov     TG: https://t.me/alwaysgolang'
+  title: news back-end
+  version: "1.0"
+paths:
+  /ads:
+    put:
+      description: Edits ad by ID
+      parameters:
+      - description: Ad details
+        in: body
+        name: ad
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateAdRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Update Ad
+      tags:
+      - ads
+  /ads/:
+    post:
+      consumes:
+      - application/json
+      description: Create a new ad with the given details
+      parameters:
+      - description: Ad details
+        in: body
+        name: ad
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateAdRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Ad'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Create a new ad
+      tags:
+      - ads
+  /ads/{id}:
+    delete:
+      description: Delete an ad
+      parameters:
+      - description: ID of the ads to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Delete an ad
+      tags:
+      - ads
+    get:
+      description: returns ads
+      parameters:
+      - description: ID of the ads to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Gets ad details
+      tags:
+      - ads
+  /ads/all:
+    get:
+      description: Get all ads with view count for admins
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Ad'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all ads
+      tags:
+      - ads
+  /auth/admin/{id}:
+    get:
+      consumes:
+      - application/json
+      description: This method is getting admin by its id
+      operationId: get-admin
+      parameters:
+      - description: ID of the admin to get
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Admin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Get Admin Data
+      tags:
+      - admin
+  /auth/admin/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates an admin
+      operationId: superadmin-create-admin
+      parameters:
+      - description: Phone Number and Password to create Admin
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AdminLoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Create Admin
+      tags:
+      - superadmin
+  /auth/admin/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This method deletes admin.
+      operationId: superadmin-delete-admin
+      parameters:
+      - description: ID of the admin to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Delete Admin
+      tags:
+      - superadmin
+  /auth/admin/edit:
+    put:
+      consumes:
+      - application/json
+      description: ID of the admin to update and other fields will be updated.
+      operationId: edit-admins
+      parameters:
+      - description: ID of the admin to edit
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Admin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Edit Admin
+      tags:
+      - superadmin
+  /auth/admin/getall:
+    get:
+      consumes:
+      - application/json
+      description: Gets All Admins
+      operationId: get-all-admins
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Admin'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Get All Admins
+      tags:
+      - superadmin
+  /auth/admin/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates an admin and returns an access token on successful
+        login.
+      operationId: admin-login
+      parameters:
+      - description: Phone Number and Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Admin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Login
+      tags:
+      - admin
+  /auth/superadmin/edit:
+    put:
+      consumes:
+      - application/json
+      description: Superadmin updates by its id.
+      operationId: edit-super-admin
+      parameters:
+      - description: Superadmin data for update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SuperAdmin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Edit Super Admin
+      tags:
+      - superadmin
+  /auth/superadmin/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a super admin and returns an access token on successful
+        login.
+      operationId: superadmin-login
+      parameters:
+      - description: Phone Number and Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.SuperAdminLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.SuperAdmin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Super Admin Login
+      tags:
+      - superadmin
+  /categories:
+    get:
+      description: Retrieve all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Category'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all categories
+      tags:
+      - Category
+  /category:
+    post:
+      consumes:
+      - application/json
+      description: Create a new category with its associated subcategories in Uzbek
+        and Russian
+      parameters:
+      - description: Category with subcategories data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CategoryWithSubCategories'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.CategoryWithSubCategories'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Create a new category with subcategories
+      tags:
+      - Category
+  /category/{id}:
+    delete:
+      description: Delete category by ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete a category
+      tags:
+      - Category
+    get:
+      consumes:
+      - application/json
+      description: get category by ID with Uzbek and Russian names
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: get an existing category
+      tags:
+      - Category
+    put:
+      consumes:
+      - application/json
+      description: Update category by ID with Uzbek and Russian names
+      parameters:
+      - description: Updated category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CategoryWithSubCategories'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update an existing category
+      tags:
+      - Category
+  /category/categories:
+    get:
+      consumes:
+      - application/json
+      description: This method retrieves all categories with their subcategories,
+        based on language query parameter
+      operationId: getall-categories-with-subcategories
+      parameters:
+      - description: Language of the category (e.g. 'uz' or 'ru')
+        in: query
+        name: language
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.CategoryWithSubCategories'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all categories with subcategories
+      tags:
+      - category
+  /category/source:
+    get:
+      consumes:
+      - application/json
+      description: This method gets all sources
+      operationId: getall-source
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Source'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: GetAllSource
+      tags:
+      - source
+    post:
+      consumes:
+      - application/json
+      description: This method creates a new source
+      operationId: create-source
+      parameters:
+      - description: Source body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Source'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Create Source
+      tags:
+      - source
+  /category/source/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This method deletes given source by its id
+      operationId: delete-source
+      parameters:
+      - description: Id of source
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Source'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete Source
+      tags:
+      - source
+  /file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: API for file upload including images and videos
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Bucket type to put file
+        in: formData
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: File upload
+      tags:
+      - file-upload
+  /news/convert:
+    get:
+      consumes:
+      - application/json
+      description: Converts an amount from one currency to another based on the latest
+        exchange rates.
+      operationId: currency-converter
+      parameters:
+      - description: Currency code to convert from
+        example: '"USD"'
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: Currency code to convert to
+        example: '"UZS"'
+        in: query
+        name: to
+        required: true
+        type: string
+      - description: Amount to be converted
+        example: '"100"'
+        in: query
+        name: amount
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns original amount, converted amount, from currency, and
+            to currency
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Currency Converter
+      tags:
+      - currency
+  /news/create:
+    post:
+      consumes:
+      - application/json
+      description: This method for creating a news
+      operationId: create-news
+      parameters:
+      - description: News details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.News'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Create News
+      tags:
+      - news
+  /news/currencies:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of currency codes and their names in Uzbek.
+      operationId: get-currency-codes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns a list of currency codes and their Uzbek names
+          schema:
+            items:
+              additionalProperties:
+                type: string
+              type: object
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get Currency Codes
+      tags:
+      - currency
+  /news/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This method deleting news
+      operationId: delete-news
+      parameters:
+      - description: ID of the news to delete
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Delete News
+      tags:
+      - news
+  /news/filtered:
+    get:
+      consumes:
+      - application/json
+      description: This method retrieves news based on optional filters (subcategory
+        IDs and category ID) with pagination.
+      operationId: get-filtered-news
+      parameters:
+      - collectionFormat: csv
+        description: List of subcategory IDs
+        in: query
+        items:
+          type: string
+        name: sub_category_ids
+        type: array
+      - description: Category ID
+        in: query
+        name: category_id
+        type: string
+      - description: Language of news
+        in: query
+        name: language
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Search term
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.News'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get Filtered News
+      tags:
+      - news
+  /news/financialData:
+    get:
+      consumes:
+      - application/json
+      description: Fetches financial data for symbols such as gold, silver, and bitcoin
+        from external APIs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns financial and currency data
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get financial data for various symbols
+      tags:
+      - Financial
+  /news/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: This method retrieves a news item by its ID
+      operationId: get-news-by-id
+      parameters:
+      - description: ID of the news to retrieve
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.News'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get News By ID
+      tags:
+      - news
+  /news/getall:
+    get:
+      consumes:
+      - application/json
+      description: This method retrieves all news with pagination.
+      operationId: get-all-news
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Language of news
+        in: query
+        name: language
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.News'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get All News
+      tags:
+      - news
+  /news/search:
+    get:
+      consumes:
+      - application/json
+      description: This method for searching globally and from our data.
+      operationId: get-filtered-news-global
+      parameters:
+      - collectionFormat: csv
+        description: List of subcategory IDs
+        in: query
+        items:
+          type: string
+        name: sub_category_ids
+        type: array
+      - description: Category ID
+        in: query
+        name: category_id
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Language of news
+        in: query
+        name: language
+        required: true
+        type: string
+      - description: Number of items per page
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Search term
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns news, global_link, and status
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Global search
+      tags:
+      - news
+  /news/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: This method updates an existing news item
+      operationId: update-news
+      parameters:
+      - description: ID of the news to update
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated news details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.NewsOneLang'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      security:
+      - BearerAuth: []
+      summary: Update News
+      tags:
+      - news
+  /news/weatherData:
+    get:
+      consumes:
+      - application/json
+      description: Fetches current weather data for a specified location using the
+        Open-Meteo API
+      parameters:
+      - description: Latitude of the location
+        example: 40.7128
+        in: query
+        name: latitude
+        required: true
+        type: number
+      - description: Longitude of the location
+        example: -74.006
+        in: query
+        name: longitude
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns current weather data
+          schema:
+            $ref: '#/definitions/v1.WeatherResponse'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get weather data
+      tags:
+      - Weather
+  /subcategories/{id}:
+    get:
+      description: Retrieve all subcategories for a given category ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.SubCategory'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get all subcategories for a category
+      tags:
+      - Subcategory
+  /subcategory/{id}:
+    delete:
+      description: Delete subcategory by ID
+      parameters:
+      - description: Subcategory ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete a subcategory
+      tags:
+      - Subcategory
+    put:
+      consumes:
+      - application/json
+      description: Update subcategory by ID with Uzbek and Russian names
+      parameters:
+      - description: Subcategory ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated subcategory data
+        in: body
+        name: subcategory
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SubCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update an existing subcategory
+      tags:
+      - Subcategory
+  /subcategory/append:
+    put:
+      consumes:
+      - application/json
+      description: Append multiple subcategories with Uzbek and Russian names
+      parameters:
+      - description: Array of subcategories data
+        in: body
+        name: subcategories
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/entity.SubCategory'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Append to existing subcategories
+      tags:
+      - Subcategory
+  /youtube/shorts:
+    get:
+      consumes:
+      - application/json
+      description: This method retrieves all YouTube Shorts posted by the specified
+        channel.
+      operationId: get-all-shorts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/v1.youtubeVideoResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get All Shorts
+      tags:
+      - youtube
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

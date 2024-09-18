@@ -1,0 +1,29 @@
+app:
+  name: "news"
+  version: "1.0.0"
+
+http:
+  port: "8888"
+
+logger:
+  log_level: "debug"
+  rollbar_env: "news"
+
+postgres:
+  pool_max: 2
+
+redis:
+  redis_host: redis
+  redis_port: 6379
+  redis_password: ""
+  redis_db: 0
+
+casbin:
+  config_file_path: "./config/auth.conf"
+  csv_file_path: "./config/auth.csv"
+  signing_key: "V0t7k0ZrN7Jm0Z6phv6BS1WxQsN8Wy5IZwv0vkvmy0s="
+  access_token_timeout: 86400
+
+youtube:
+  api_key: "AIzaSyCOv7UjUeMFZCEY-uo54nLMeKkZC8Xo5qQ"
+  channel_id: "UCfkZnclG3eQMveXylGKs8OA"

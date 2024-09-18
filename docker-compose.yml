@@ -1,0 +1,97 @@
+services:
+  app-news:
+    build: .
+    container_name: app-news
+    networks:
+      news:
+        aliases:
+          - app-news
+    env_file: 
+      - .env
+    ports:
+      - "8888:8888"
+
+  postgres-news:
+    container_name: postgres-news
+    image: postgres:latest
+    networks:
+      news:
+        aliases:
+          - postgres-news
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    env_file: .env
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  adminer-news:
+    image: adminer:latest
+    container_name: adminer-news
+    ports:
+      - "8889:8080"
+    networks:
+      - news
+
+  minio-news:
+    container_name: minio-news
+    image: bitnami/minio:latest
+    networks:
+      news:
+        aliases:
+          - minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file: .env
+    volumes:
+      - news_minio-data:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  mongodb-news:
+    container_name: mongodb-news
+    image: mongo:latest
+    networks:
+      news:
+        aliases:
+          - mongodb
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root-username
+      MONGO_INITDB_ROOT_PASSWORD: root-password
+    command: ["mongod", "--auth"]
+    ports:
+      - "27017:27017"
+
+  redis-news:
+    container_name: redis-news
+    image: redis:latest
+    networks:
+      news:
+        aliases:
+          - redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+networks:
+  news:
+
+volumes:
+  pg-data:
+  news_minio-data:
+  mongodb-data:
+  redis-data:

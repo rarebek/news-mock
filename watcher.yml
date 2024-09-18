@@ -1,0 +1,7 @@
+version: '2'
+options:
+  - command: up -d --build
+    watch:
+      - .
+
+
