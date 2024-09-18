@@ -45,15 +45,7 @@ func (n *NewsRepo) CreateNews(ctx context.Context, newsUz *entity.News, newsRu *
 		"created_at":      time.Now(),
 		"special_id":      specialId,
 	}
-	sqlUz, argsUz, err := n.Builder.Insert("news").
-		SetMap(dataUz).ToSql()
-	if err != nil {
-		return err
-	}
 
-	if _, err = n.Pool.Exec(ctx, sqlUz, argsUz...); err != nil {
-		return err
-	}
 
 	for _, v := range newsUz.SubCategoryIDs {
 		dataUz = map[string]interface{}{
